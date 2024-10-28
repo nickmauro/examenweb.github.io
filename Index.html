@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio de sesión</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/estilos.css">
+</head>
+
+<body style="background-image: url('imagenes/fondo.jpg');">
+    <main>
+        <div class="contenedor__todo">
+            <div class="caja__trasera">
+                <div class="caja__trasera-login">
+                    <h3>¿Ya tienes una cuenta?</h3>
+                    <p>Inicia sesión para entrar en la página</p>
+                    <button id="btn__iniciar-sesion">Iniciar Sesión</button>
+                </div>
+                <div class="caja__trasera-register">
+                    <h3>¿Aún no tienes una cuenta?</h3>
+                    <p>Regístrate para que puedas iniciar sesión</p>
+                    <button id="btn__registrarse">Registrarse</button>
+                </div>
+            </div>
+
+            <!--Formulario de Login y registro-->
+            <div class="contenedor__login-register">
+                <!--Login-->
+                <form action="" class="formulario__login">
+                    <h2>Iniciar Sesión</h2>
+                    <h2>Instituto MausNick</h2>
+                    <input type="text" id="loginEmail" placeholder="Correo Electrónico">
+                    <input type="password" id="loginPassword" placeholder="Contraseña">
+                    <button type="button" id="btnLogin">Entrar</button>
+                    <p id="forgotPassword" style="cursor:pointer; color:blue;">¿Olvidaste tu contraseña?</p>
+                </form>
+
+                <!--Register-->
+                <form action="" class="formulario__register" id="registerForm">
+                    <h2>Registrarse</h2>
+                    <select id="tipoUsuario">
+                        <option value="">Seleccione el tipo de usuario</option>
+                        <option value="estudiante">Estudiante</option>
+                        <option value="maestro">Maestro</option>
+                    </select>
+                    <input type="text" id="registerNombre" placeholder="Nombre completo">
+                    <input type="text" id="registerCorreo" placeholder="Correo Electrónico">
+                    <input type="password" id="registerPassword" placeholder="Contraseña">
+                    <input type="password" id="registerClave" placeholder="Clave (solo para maestros)"
+                        style="display:none;">
+                    <button type="button" id="btnRegister">Registrarse</button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <!-- Integración de Firebase y Firestore -->
+    <script type="module">
+        // Importar Firebase y Firestore
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, query, where, getDocs } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+
+        // Configuración de Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyAAovxe4C6FdMbd38vDs_bBEhdCFs1DJ3g",
+            authDomain: "examcreator-635ab.firebaseapp.com",
+            projectId: "examcreator-635ab",
+            storageBucket: "examcreator-635ab.appspot.com",
+            messagingSenderId: "234754721349",
+            appId: "1:234754721349:web:2c93cc00514ac39e83452c",
+            measurementId: "G-XVLSN9V38X"
+        };
+
+        // Inicializar Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        // Función para guardar el registro de usuario en Firestore
+        async function guardarUsuario(nombre, correo, password, tipoUsuario) {
+            try {
+                // Crear usuario en Firebase Authentication
+                const userCredential = await createUserWithEmailAndPassword(auth, correo, password);
+                const user = userCredential.user;
+
+                // Guardar información adicional del usuario en Firestore
+                await addDoc(collection(db, "usuarios"), {
+                    uid: user.uid, // Almacenar el ID único del usuario
+                    nombre: nombre,
+                    correo: correo,
+                    password: password,
+                    tipoUsuario: tipoUsuario
+                });
+
+                alert("Registro exitoso");
+
+                // Limpiar los campos de entrada después del registro
+                document.getElementById('registerNombre').value = '';
+                document.getElementById('registerCorreo').value = '';
+                document.getElementById('registerPassword').value = '';
+                document.getElementById('registerClave').value = '';
+                document.getElementById('tipoUsuario').selectedIndex = 0; // Restablecer select
+            } catch (e) {
+                alert("Error al guardar el usuario. No se debe de repetir el correo\n El correo ya existe ");
+            }
+        }
+
+        // Escuchar el cambio de selección del tipo de usuario
+        document.getElementById('tipoUsuario').addEventListener('change', (event) => {
+            const claveField = document.getElementById('registerClave');
+            if (event.target.value === 'maestro') {
+                claveField.style.display = 'block'; // Mostrar campo de clave
+            } else {
+                claveField.style.display = 'none'; // Ocultar campo de clave
+            }
+        });
+
+        // Escuchar el evento del botón de registro
+        document.getElementById('btnRegister').addEventListener('click', () => {
+            const nombre = document.getElementById('registerNombre').value;
+            const correo = document.getElementById('registerCorreo').value;
+            const password = document.getElementById('registerPassword').value;
+            const tipoUsuario = document.getElementById('tipoUsuario').value;
+            const clave = document.getElementById('registerClave').value;
+
+            // Validar entradas según el tipo de usuario
+            if (tipoUsuario === 'maestro') {
+                if (!clave) {
+                    alert('Por favor, ingresa los datos');
+                    return; // Detener la ejecución si el campo de clave está vacío
+                }
+                if (clave !== '1234') {
+                    alert('La clave es incorrecta, por favor verifique.');
+                    return;
+                }
+            }
+
+
+            if (nombre && correo && password.length >= 6 && (tipoUsuario === 'estudiante' || (tipoUsuario === 'maestro' && clave === '1234'))) {
+                guardarUsuario(nombre, correo, password, tipoUsuario); // Llamar a la función para guardar el usuario en Firestore
+            } else {
+                alert('Por favor, completa todos los campos correctamente y asegúrate de que la contraseña tenga al menos 6 caracteres.');
+            }
+        });
+
+        // Escuchar el evento del botón de inicio de sesión
+        document.getElementById('btnLogin').addEventListener('click', async () => {
+            // Obtener el correo y la contraseña de los campos de entrada
+            const email = document.getElementById('loginEmail').value.trim(); // Eliminar espacios
+            const password = document.getElementById('loginPassword').value.trim(); // Eliminar espacios
+
+            // Validación simple del correo electrónico (opcional)
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailPattern.test(email)) {
+                alert("Por favor ingresa un correo electrónico válido.");
+                return; // Detener la ejecución si el correo es inválido
+            }
+
+            try {
+                // Intentar iniciar sesión con Firebase Auth
+                await signInWithEmailAndPassword(auth, email, password);
+
+                // Obtener datos del usuario de Firestore basados en el correo
+                const userQuery = query(collection(db, "usuarios"), where("correo", "==", email));
+                const querySnapshot = await getDocs(userQuery);
+
+                // Verificar si se encontró algún dato de usuario
+                if (!querySnapshot.empty) {
+                    const userData = querySnapshot.docs[0].data();
+                    // Redirigir según el tipo de usuario
+                    if (userData.tipoUsuario === "estudiante") {
+                        window.location.href = "inicioalumno.html"; // Redirigir a YouTube
+                    } else if (userData.tipoUsuario === "maestro") {
+                        window.location.href = "iniciomaestro.html"; // Redirigir a Google
+                    }
+                } else {
+                    alert("Usuario no encontrado.");
+                }
+            } catch (error) {
+                // Manejar diferentes casos de error
+                if (error.code === 'auth/user-not-found') {
+                    alert("No hay usuario registrado con ese correo.");
+                } else if (error.code === 'auth/wrong-password') {
+                    alert("La contraseña es incorrecta.");
+                } else {
+                    alert("Error en el inicio de sesión. Verifica tu correo y contraseña.");
+                }
+            }
+        });
+
+        // Escuchar el evento para recuperar la contraseña
+        document.getElementById('forgotPassword').addEventListener('click', async () => {
+            const email = document.getElementById('loginEmail').value.trim(); // Eliminar espacios
+            if (!email) {
+                alert("Por favor ingresa tu correo electrónico.");
+                return; // Detener la ejecución si no hay correo
+            }
+            try {
+                // Enviar correo de recuperación de contraseña
+                await sendPasswordResetEmail(auth, email);
+                alert("Correo de recuperación enviado. Revisa tu bandeja de entrada.");
+            } catch (error) {
+                alert("Error al enviar el correo de recuperación. Verifica tu correo electrónico.");
+            }
+        });
+
+        // Mostrar el formulario de inicio de sesión por defecto
+        document.querySelector('.formulario__register').style.display = 'none'; // Ocultar el registro inicialmente
+
+        // Cambiar entre formularios de inicio de sesión y registro
+        document.getElementById('btn__iniciar-sesion').addEventListener('click', () => {
+            document.querySelector('.formulario__login').style.display = 'block'; // Mostrar el formulario de inicio de sesión
+            document.querySelector('.formulario__register').style.display = 'none'; // Ocultar el formulario de registro
+        });
+
+        document.getElementById('btn__registrarse').addEventListener('click', () => {
+            document.querySelector('.formulario__register').style.display = 'block'; // Mostrar el formulario de registro
+            document.querySelector('.formulario__login').style.display = 'none'; // Ocultar el formulario de inicio de sesión
+        });
+    </script>
+    <script src="js/script.js"></script>
+</body>
+
+</html>

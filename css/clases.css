@@ -1,0 +1,389 @@
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    margin: 0;
+    padding: 0;
+    background-size: cover;
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    transition: margin-left 0.3s;
+}
+
+/* Sidebar Styles */
+.sidebar {
+    height: 100%;
+    width: 250px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: #333;
+    padding-top: 20px;
+    overflow-x: hidden;
+    transition: width 0.3s ease;
+    color: white;
+    z-index: 1000;
+}
+
+.sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    background-color: #444;
+}
+
+.sidebar ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.sidebar ul li {
+    padding: 15px 20px;
+}
+
+.sidebar ul li a {
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+    display: block;
+    width: 100%;
+    padding: 15px 20px;
+}
+
+.sidebar ul li a i {
+    margin-right: 10px;
+}
+
+/* Active and Hover States */
+.sidebar ul li.active a {
+    background-color: #1660ff;
+    color: white;
+    font-weight: bold;
+}
+
+.sidebar ul li.active a i,
+.sidebar ul li a:hover i {
+    color: white;
+}
+
+.sidebar ul li:hover {
+    background-color: #575757;
+}
+
+/* Toggle Sidebar Button */
+.toggle-btn {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    background-color: #333;
+    color: white;
+    border: none;
+    padding: 10px;
+    font-size: 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    z-index: 100;
+}
+
+.hide-sidebar .toggle-btn {
+    left: 10px;
+}
+
+/* Hide/Show Sidebar */
+.hide-sidebar .sidebar {
+    width: 0;
+}
+
+.hide-sidebar .main-content {
+    margin-left: 0;
+}
+
+/* Main Content Styles */
+.main-content {
+    margin-left: 250px;
+    padding: 20px;
+    transition: margin-left 0.3s ease;
+}
+
+.container {
+    width: 80%;
+    margin: 20px auto;
+}
+
+h1 {
+    text-align: left;
+    color: #ffffff;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+/* Button Styles */
+.btn {
+    background-color: #333;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+    background-color: #1660ff;
+    color: white;
+}
+
+/* Button for 'Regresar a clases' */
+button[onclick] {
+    background-color: #1e88e5;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: background-color 0.3s ease;
+    margin-bottom: 15px;
+}
+
+button[onclick] i {
+    margin-right: 8px;
+}
+
+button[onclick]:hover {
+    background-color: #1660ff;
+}
+
+/* Grid and Card Styles */
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 20px;
+    background-color: #f4f4f4;
+    margin: 10px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.card:hover {
+    transform: scale(1.05);
+}
+
+.card h3 {
+    font-size: 18px;
+    margin: 0 0 10px;
+    color: #333;
+}
+
+.card p {
+    margin: 0;
+    color: #666;
+}
+
+/* Actions (Buttons) Styles */
+.actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 15px;
+}
+
+.actions button {
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+.actions button i {
+    font-size: 1.5em;
+    color: #666;
+    transition: color 0.3s ease;
+}
+
+.actions button.view-btn:hover i {
+    color: #1e88e5;
+}
+
+.actions button.edit-btn:hover i {
+    color: #4caf50;
+}
+
+.actions button.delete-btn:hover i {
+    color: #f44336;
+}
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 999;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+    padding-top: 50px;
+    transition: opacity 0.3s ease;
+    opacity: 0;
+}
+
+.modal.show {
+    display: flex;
+    opacity: 1;
+}
+
+.modal-content {
+    background-color: white;
+    margin: auto;
+    padding: 20px;
+    width: 40%;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover {
+    color: black;
+    cursor: pointer;
+}
+
+/* Question Form Styles */
+.pregunta-container {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 15px;
+    position: relative;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+.eliminar-pregunta {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background-color: red;
+    color: white;
+    border: none;
+    cursor: pointer;
+    padding: 3px 7px;
+    font-size: 12px;
+    border-radius: 50%;
+}
+
+.opciones-container {
+    margin-top: 10px;
+}
+
+.opciones-container label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 14px;
+}
+
+.opciones-container input[type="text"] {
+    width: 80%;
+    padding: 5px;
+    margin-left: 10px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+.opciones-container input[type="radio"],
+.opciones-container input[type="checkbox"] {
+    margin-right: 5px;
+}
+
+#guardar-cuestionario-btn,
+#agregar-pregunta-btn {
+    margin-top: 15px;
+    background-color: #333;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#guardar-cuestionario-btn:hover,
+#agregar-pregunta-btn:hover {
+    background-color: #1660ff;
+}
+
+/* Header button styling */
+.header button {
+    background-color: #333;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: background-color 0.3s ease;
+}
+
+.header button i {
+    margin-right: 8px;
+}
+
+.header button:hover {
+    background-color: #1660ff;
+}
+
+/* Modal Centering */
+#modal-cuestionario.show,
+#modal-edit.show,
+#modal.show {
+    display: flex;
+    opacity: 1;
+}
+
+#modal-cuestionario .modal-content,
+#modal-edit .modal-content,
+#modal .modal-content {
+    width: 50%;
+    max-width: 600px;
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+    animation: fadeIn 0.3s ease-in-out;
+}
